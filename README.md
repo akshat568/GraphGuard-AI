@@ -7,7 +7,7 @@
 [![React 19](https://img.shields.io/badge/React-19_TypeScript-1e5631.svg)](https://react.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-1e5631.svg)](LICENSE)
 
-**GraphGuard AI** is a production-grade machine learning system designed to detect illicit Bitcoin transactions and fraudulent entities across multi-hop transaction networks. Built on the **Elliptic Bitcoin Dataset** (203,769 transactions, 234,355 directed edges across 49 temporal timesteps), GraphGuard AI combines temporal graph feature engineering, leakage-safe neighborhood risk modeling, an explainable fraud investigation priority layer, a FastAPI production backend, and a modern React/TypeScript dashboard.
+**GraphGuard AI** is an end-to-end machine learning system designed to detect illicit Bitcoin transactions and fraudulent entities across multi-hop transaction networks. Built on the **Elliptic Bitcoin Dataset** (203,769 transactions, 234,355 directed edges across 49 temporal timesteps), GraphGuard AI combines temporal graph feature engineering, leakage-safe neighborhood risk modeling, an explainable fraud investigation priority layer, a production-style FastAPI backend, and a modern React/TypeScript dashboard.
 
 ---
 
@@ -23,7 +23,7 @@ All evaluation metrics are computed on a **strict temporal test set** (timesteps
 - **Recall at Threshold 0.90**: **58.96%**
 - **F1 Score at Threshold 0.90**: **0.7339**
 - **Investigation Priority (`IMMEDIATE` Tier)**: **98.10% illicit precision** on temporal test set
-- **Backend Latency**: **< 5ms** O(1) indexed in-memory lookup across 200k+ transactions
+- **Backend Architecture**: Indexed in-memory transaction and graph lookups with startup data loading
 
 ---
 
@@ -32,7 +32,7 @@ All evaluation metrics are computed on a **strict temporal test set** (timesteps
 1. **Strict Temporal Validation (Zero Future Data Leakage)**: Traditional financial machine learning projects often apply random k-fold cross-validation on graph nodes, which causes severe temporal target leakage. GraphGuard AI strictly evaluates on future timesteps (Train: timesteps 1–34, Validation: 35–39, Test: 40–49).
 2. **Leakage-Safe Neighborhood Risk Modeling**: Graph neural networks and neighborhood aggregations often suffer from label leakage during training. GraphGuard AI computes out-of-fold neighborhood risk predictions across historical training folds, preventing target leakage while capturing multi-hop transaction contamination.
 3. **Decoupled Secondary Triage Layer**: Rather than making false claims that a manual weighted formula is a "scientifically optimal risk score", GraphGuard AI maintains a clear distinction between the trained XGBoost risk probability and the operational **Investigation Priority Layer** (`IMMEDIATE`, `HIGH`, `REVIEW`, `LOW`) built for fraud analyst workflow triage.
-4. **End-to-End Production Full-Stack Implementation**: Features a production FastAPI service loading 657 MB of real datasets into memory at startup with sub-millisecond lookups, paired with a React/TypeScript interface adhering to a light professional visual theme. Zero mock data.
+4. **End-to-End Full-Stack Implementation**: Features a production-style FastAPI backend loading datasets into memory at startup with fast indexed lookups, paired with a React/TypeScript interface adhering to a light professional visual theme. Zero mock data.
 
 ---
 
@@ -55,7 +55,7 @@ All evaluation metrics are computed on a **strict temporal test set** (timesteps
                                             ▼
   ┌──────────────────────────────────────────────────────────────────────────────────────────┐
   │                         FastAPI Backend Service (Port 8001)                              │
-  │   • In-Memory Indexing (O(1) Lookups)          • Investigation Priority Triage Engine   │
+  │   • In-Memory Indexing                        • Investigation Priority Triage Engine         │
   │   • Real-Time XGBoost Inference                 • 12 Production REST Endpoints           │
   └─────────────────────────────────────────┬────────────────────────────────────────────────┘
                                             │
@@ -69,9 +69,29 @@ All evaluation metrics are computed on a **strict temporal test set** (timesteps
 
 ---
 
+## 🖥️ Application Screenshots
+
+### Dashboard
+
+![GraphGuard AI Dashboard](docs/screenshots/dashboard.png)
+
+### Transactions Explorer
+
+![Transactions Explorer](docs/screenshots/transactions-explorer.png)
+
+### Transaction Investigation
+
+![Transaction Investigation](docs/screenshots/transaction-investigation.png)
+
+### Live Risk Prediction
+
+![Live Risk Prediction](docs/screenshots/live-risk-prediction.png)
+
+---
+
 ## 📊 Dataset Overview
 
-The dataset originates from the **Elliptic Bitcoin Dataset**, the largest publicly available labeled cryptocurrency transaction graph:
+The dataset originates from the **Elliptic Bitcoin Dataset**, a labeled Bitcoin transaction graph widely used for illicit transaction research:
 
 - **Total Transactions**: 203,769 nodes
 - **Total Directed Edges**: 234,355 graph edges representing Bitcoin payment flows
@@ -116,7 +136,8 @@ To capture graph contamination without target leakage, historical out-of-fold ri
 - **Leakage-Safe Neighborhood XGBoost (185 Features)**:
   - **Test PR-AUC**: **0.7441** (**+10.4% relative gain over baseline**)
   - **Test ROC-AUC**: **0.9334**
-  - **Test F1 (at threshold 0.50)**: **0.7234**
+  - **Test F1 at threshold 0.50**: **0.7234**
+  - **Production F1 at threshold 0.90**: **0.7339**
 
 ---
 
@@ -128,20 +149,20 @@ To capture graph contamination without target leakage, historical out-of-fold ri
 | **GraphSAGE GNN** | Graph | 0.4296 | 0.8341 | 0.2397 | 2-layer PyTorch Geometric GNN |
 | **Feature-Only XGBoost** | 165 | 0.6738 | 0.8839 | 0.6743 | Non-linear baseline |
 | **Graph-Enhanced XGBoost** | 180 | 0.6756 | 0.8884 | 0.6696 | Added 15 graph structural features |
-| **Leakage-Safe Neighborhood XGBoost** | **185** | **0.7441** | **0.9334** | **0.7339** | **Primary Production Model (Out-of-Fold Risk)** |
+| **Leakage-Safe Neighborhood XGBoost** | **185** | **0.7441** | **0.9334** | **0.7339** | **Primary Production Model (F1 at threshold 0.90; F1 is 0.7234 at 0.50)** |
 
 ### Production Threshold Analysis (Threshold 0.90)
 
 A comprehensive threshold sweep was evaluated on the temporal test set (timesteps 40–49) to optimize operational efficiency for financial compliance teams:
 
 ```
-  Threshold 0.50: Precision = 87.87%, Recall = 61.48%, Alert Count = 445, False Positives = 54
-  Threshold 0.90: Precision = 97.15%, Recall = 58.96%, Alert Count = 386, False Positives = 11  <-- PRODUCTION CHOICE
+  Threshold 0.50: Precision = 87.87%, Recall = 61.48%, Alert Count = 445, False Positives = 54 (F1 = 0.7234)
+  Threshold 0.90: Precision = 97.15%, Recall = 58.96%, Alert Count = 386, False Positives = 11 (F1 = 0.7339) <-- PRODUCTION CHOICE
   Threshold 0.95: Precision = 97.88%, Recall = 58.02%, Alert Count = 377, False Positives = 8
 ```
 
 > **Why Threshold 0.90?**
-> Setting the alert threshold to 0.90 achieves a **97.15% Precision** rate with only **11 false positives** across 11,184 test transactions, reducing compliance officer alert fatigue while capturing nearly 59% of illicit entities.
+> Setting the alert threshold to 0.90 achieves a **97.15% Precision** rate (F1 Score: **0.7339**) with only **11 false positives** across 11,184 test transactions, reducing compliance officer alert fatigue while capturing nearly 59% of illicit entities.
 
 ---
 
@@ -175,7 +196,7 @@ $$\text{Investigation Score} = 0.50 \cdot S_{\text{model}} + 0.25 \cdot S_{\text
 Built using **FastAPI**, **Uvicorn**, **Pydantic v2**, **pandas**, **numpy**, **joblib**, **scikit-learn**, and **XGBoost**.
 
 ### Core Backend Features:
-- **Startup Indexing**: Loads the 657 MB raw feature file, graph edgelists, and model artifacts once at application startup. Builds indexed DataFrames and graph adjacency dicts (`incoming_adj`, `outgoing_adj`) for sub-millisecond O(1) lookups.
+- **Startup Indexing**: Loads the raw feature file, graph edgelists, and model artifacts once at application startup. Indexed in-memory transaction and graph structures are constructed at startup to avoid repeated CSV scans during API requests.
 - **Zero Retraining in API**: API requests do not trigger online retraining or repeated CSV file scans.
 - **Port 8001 Production Binding**: Operates cleanly on port 8001 with CORS configuration.
 
@@ -230,7 +251,7 @@ GraphGuard-AI/
 │   │   ├── config.py                  # Settings, file paths & thresholds
 │   │   ├── schemas.py                 # Pydantic v2 data models
 │   │   └── services/
-│   │       ├── data_service.py        # Startup loader & O(1) indexed DataFrames
+│   │       ├── data_service.py        # Startup loader & indexed DataFrames
 │   │       ├── model_service.py       # XGBoost inference service
 │   │       ├── graph_service.py       # Graph neighbor traversal
 │   │       ├── explanation_service.py # Feature importance & evidence synthesizer
@@ -243,7 +264,7 @@ GraphGuard-AI/
 │   │   ├── api/
 │   │   │   └── client.ts              # API client targeting http://127.0.0.1:8001
 │   │   ├── components/
-│   │   │   ├── Header.tsx             # Brand header, search & health badge
+│   │   │   ├── Header.tsx             # Brand header and global transaction search
 │   │   │   ├── DashboardOverview.tsx  # Summary cards & key indicators
 │   │   │   ├── RiskDistributionCard.tsx # Risk score distribution chart
 │   │   │   ├── ModelPerformanceCard.tsx # PR-AUC, ROC-AUC & feature importances
@@ -284,7 +305,7 @@ GraphGuard-AI/
 
 ### 1. Clone Repository & Setup Virtual Environment
 ```bash
-git clone https://github.com/your-username/GraphGuard-AI.git
+git clone https://github.com/akshat568/GraphGuard-AI.git
 cd GraphGuard-AI
 python -m venv .venv
 .venv\Scripts\activate
@@ -359,10 +380,10 @@ Run test set evaluation across timesteps 40–49:
 ## 📝 Resume-Ready Project Summary
 
 **GraphGuard AI — Bitcoin Transaction Fraud & Illicit Entity Detection System**
-*Key Skills: Python, PyTorch Geometric, XGBoost, FastAPI, React, TypeScript, Graph Feature Engineering, Machine Learning Production Deployment*
+*Key Skills: Python, PyTorch Geometric, XGBoost, FastAPI, React, TypeScript, Graph Feature Engineering, Machine Learning Systems, Model Evaluation*
 
 - Engineered a graph machine learning system on **203,769 Bitcoin transactions** and **234,355 directed edges** across 49 temporal timesteps.
 - Developed a **Leakage-Safe Neighborhood XGBoost** model using 185 features, achieving **0.7441 Test PR-AUC** (+10.4% relative gain over baseline) and **0.9334 ROC-AUC** under strict temporal validation.
 - Calibrated a production alert threshold (0.90) delivering **97.15% Precision** with only 11 false positives across 11,184 test transactions.
 - Designed an explainable **Investigation Priority Layer** concentrating **98.10% illicit precision** in the top `IMMEDIATE` priority tier for compliance analyst triage.
-- Built a high-performance **FastAPI backend** with O(1) in-memory indexing (< 5ms response time) and a modern **React 19 / TypeScript** dashboard.
+- Built a FastAPI backend with indexed in-memory transaction and graph structures for efficient API lookups, paired with a React 19 / TypeScript dashboard.
