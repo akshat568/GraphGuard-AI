@@ -1,0 +1,39 @@
+{
+    "test_pr_auc": 0.7440705572802038,
+    "best_f1": {
+        "threshold": 0.9,
+        "precision": 0.9715025906735751,
+        "recall": 0.589622641509434,
+        "f1": 0.7338551859099804,
+        "true_negatives": 10537.0,
+        "false_positives": 11.0,
+        "false_negatives": 261.0,
+        "true_positives": 375.0,
+        "alerts": 386.0,
+        "alert_rate": 0.03451359084406295
+    },
+    "highest_precision": {
+        "threshold": 0.95,
+        "precision": 0.9787798408488063,
+        "recall": 0.5801886792452831,
+        "f1": 0.7285291214215203,
+        "true_negatives": 10540.0,
+        "false_positives": 8.0,
+        "false_negatives": 267.0,
+        "true_positives": 369.0,
+        "alerts": 377.0,
+        "alert_rate": 0.03370886981402003
+    },
+    "best_recall_at_80_precision": {
+        "threshold": 0.25,
+        "precision": 0.8012048192771084,
+        "recall": 0.6273584905660378,
+        "f1": 0.7037037037037037,
+        "true_negatives": 10449.0,
+        "false_positives": 99.0,
+        "false_negatives": 237.0,
+        "true_positives": 399.0,
+        "alerts": 498.0,
+        "alert_rate": 0.04452789699570815
+    }
+}

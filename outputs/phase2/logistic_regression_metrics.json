@@ -1,0 +1,75 @@
+{
+    "model": "LogisticRegression",
+    "features": 165,
+    "temporal_split": {
+        "train": "1-34",
+        "validation": "35-39",
+        "test": "40-49"
+    },
+    "train": {
+        "split": "train",
+        "samples": 29894,
+        "positive_samples": 3462,
+        "negative_samples": 26432,
+        "positive_rate": 0.11580919248009634,
+        "precision": 0.5534370296036126,
+        "recall": 0.9558058925476604,
+        "f1": 0.7009850651414045,
+        "pr_auc": 0.8406961092302306,
+        "roc_auc": 0.9794139576453029,
+        "confusion_matrix": [
+            [
+                23762,
+                2670
+            ],
+            [
+                153,
+                3309
+            ]
+        ]
+    },
+    "validation": {
+        "split": "validation",
+        "samples": 5486,
+        "positive_samples": 447,
+        "negative_samples": 5039,
+        "positive_rate": 0.08148013124316442,
+        "precision": 0.25426829268292683,
+        "recall": 0.9328859060402684,
+        "f1": 0.3996166746526114,
+        "pr_auc": 0.4378987952077028,
+        "roc_auc": 0.9192561998514496,
+        "confusion_matrix": [
+            [
+                3816,
+                1223
+            ],
+            [
+                30,
+                417
+            ]
+        ]
+    },
+    "test": {
+        "split": "test",
+        "samples": 11184,
+        "positive_samples": 636,
+        "negative_samples": 10548,
+        "positive_rate": 0.05686695278969957,
+        "precision": 0.1492495043896913,
+        "recall": 0.8286163522012578,
+        "f1": 0.25293976481881447,
+        "pr_auc": 0.21889170173593747,
+        "roc_auc": 0.8525448503755221,
+        "confusion_matrix": [
+            [
+                7544,
+                3004
+            ],
+            [
+                109,
+                527
+            ]
+        ]
+    }
+}

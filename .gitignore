@@ -1,34 +1,46 @@
-# Python
+# Python & Virtual Environments
 __pycache__/
 *.py[cod]
-*.pyo
-
-# Virtual environment
+*$py.class
+*.so
 .venv/
+venv/
+env/
+ENV/
 
-# Jupyter
+# Node.js & Frontend Build Outputs
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+*.local
+
+# Data Files (Exclude large raw CSVs from git tracking)
+data/raw/elliptic_txs_features.csv
+data/raw/elliptic_txs_classes.csv
+data/raw/elliptic_txs_edgelist.csv
+
+# Large Binary Model Checkpoints (Keep evaluation JSONs/CSVs tracked)
+outputs/**/*.pt
+outputs/**/*.pth
+outputs/**/*.joblib
+
+# Production model required by the backend
+!outputs/phase5/neighborhood_xgboost.joblib
+
+# Jupyter Notebook Checkpoints
 .ipynb_checkpoints/
 
-# Raw and processed datasets
-data/raw/*
-data/processed/*
-
-# Generated outputs
-outputs/*
-
-# Trained model files
-*.pt
-*.pth
-*.pkl
-*.joblib
-
-# Environment variables
-.env
-.env.*
-
-# VS Code
+# IDE & Editor Settings
 .vscode/
+.idea/
+*.swp
+*.swo
 
-# OS
+# System Files
 .DS_Store
 Thumbs.db
+
+# Logs & Temporary Scratch Files
+*.log
+scratch/

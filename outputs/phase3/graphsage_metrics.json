@@ -1,0 +1,87 @@
+{
+    "model": "GraphSAGE",
+    "architecture": {
+        "input_dim": 165,
+        "hidden_dim": 128,
+        "embedding_dim": 64,
+        "dropout": 0.3
+    },
+    "optimizer": {
+        "name": "Adam",
+        "learning_rate": 0.001,
+        "weight_decay": 0.0001
+    },
+    "epochs": 100,
+    "best_validation_pr_auc": 0.7324915977042481,
+    "temporal_split": {
+        "train": "1-34",
+        "validation": "35-39",
+        "test": "40-49"
+    },
+    "train": {
+        "split": "train",
+        "samples": 29894,
+        "positive_samples": 3462,
+        "negative_samples": 26432,
+        "positive_rate": 0.11580919248009634,
+        "precision": 0.534027089527585,
+        "recall": 0.9338532640092432,
+        "f1": 0.6794871794871795,
+        "pr_auc": 0.8781209631341087,
+        "roc_auc": 0.976599895807543,
+        "confusion_matrix": [
+            [
+                23611,
+                2821
+            ],
+            [
+                229,
+                3233
+            ]
+        ]
+    },
+    "validation": {
+        "split": "validation",
+        "samples": 5486,
+        "positive_samples": 447,
+        "negative_samples": 5039,
+        "positive_rate": 0.08148013124316442,
+        "precision": 0.2723709993468321,
+        "recall": 0.9328859060402684,
+        "f1": 0.42163801820020225,
+        "pr_auc": 0.7324915977042481,
+        "roc_auc": 0.9500619996244061,
+        "confusion_matrix": [
+            [
+                3925,
+                1114
+            ],
+            [
+                30,
+                417
+            ]
+        ]
+    },
+    "test": {
+        "split": "test",
+        "samples": 11184,
+        "positive_samples": 636,
+        "negative_samples": 10548,
+        "positive_rate": 0.05686695278969957,
+        "precision": 0.14462138446538836,
+        "recall": 0.699685534591195,
+        "f1": 0.23969835712361973,
+        "pr_auc": 0.42963513945755155,
+        "roc_auc": 0.8341211365593167,
+        "confusion_matrix": [
+            [
+                7916,
+                2632
+            ],
+            [
+                191,
+                445
+            ]
+        ]
+    }
+}

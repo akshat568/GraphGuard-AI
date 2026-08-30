@@ -1,0 +1,70 @@
+{
+    "model": "leakage_safe_neighborhood_xgboost",
+    "original_feature_count": 165,
+    "neighborhood_feature_count": 20,
+    "total_feature_count": 185,
+    "train_timesteps": "11-34",
+    "validation_timesteps": "35-39",
+    "test_timesteps": "40-49",
+    "baseline_feature_only_pr_auc": 0.6738,
+    "graph_enhanced_xgboost_pr_auc": 0.6756,
+    "metrics": {
+        "train": {
+            "samples": 17426,
+            "positive_rate": 0.16859864570182487,
+            "precision": 0.9996597482136781,
+            "recall": 1.0,
+            "f1": 0.9998298451590948,
+            "pr_auc": 1.0,
+            "roc_auc": 1.0,
+            "confusion_matrix": [
+                [
+                    14487,
+                    1
+                ],
+                [
+                    0,
+                    2938
+                ]
+            ]
+        },
+        "validation": {
+            "samples": 5486,
+            "positive_rate": 0.08148013124316442,
+            "precision": 0.9146608315098468,
+            "recall": 0.9351230425055929,
+            "f1": 0.9247787610619469,
+            "pr_auc": 0.966150502087526,
+            "roc_auc": 0.991041686922541,
+            "confusion_matrix": [
+                [
+                    5000,
+                    39
+                ],
+                [
+                    29,
+                    418
+                ]
+            ]
+        },
+        "test": {
+            "samples": 11184,
+            "positive_rate": 0.05686695278969957,
+            "precision": 0.8786516853932584,
+            "recall": 0.6147798742138365,
+            "f1": 0.723404255319149,
+            "pr_auc": 0.7440705572802038,
+            "roc_auc": 0.9334393476482471,
+            "confusion_matrix": [
+                [
+                    10494,
+                    54
+                ],
+                [
+                    245,
+                    391
+                ]
+            ]
+        }
+    }
+}

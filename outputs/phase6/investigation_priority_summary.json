@@ -1,0 +1,58 @@
+{
+    "evaluation_scope": "Temporal Test Set (Timesteps 40-49)",
+    "total_test_transactions": 46647,
+    "total_labeled_transactions": 11184,
+    "total_illicit_transactions": 636,
+    "methodology": {
+        "formula": "Investigation Score = 0.50 * model_risk + 0.25 * neighborhood_risk + 0.15 * contrast_signal + 0.10 * graph_signal",
+        "priority_rules": {
+            "IMMEDIATE": "model_risk >= 0.90 OR (investigation_score >= 0.80 AND model_risk >= 0.50)",
+            "HIGH": "(0.50 <= model_risk < 0.90) OR (investigation_score >= 0.60 AND model_risk >= 0.25)",
+            "REVIEW": "(0.25 <= model_risk < 0.50) OR (investigation_score >= 0.45)",
+            "LOW": "Otherwise (model_risk < 0.25 AND investigation_score < 0.45)"
+        }
+    },
+    "priority_category_breakdown": {
+        "IMMEDIATE": {
+            "transaction_count": 1923,
+            "pct_of_test_set": 4.12,
+            "labeled_count": 368,
+            "illicit_count": 361,
+            "illicit_precision_rate": 0.981
+        },
+        "HIGH": {
+            "transaction_count": 1878,
+            "pct_of_test_set": 4.03,
+            "labeled_count": 87,
+            "illicit_count": 34,
+            "illicit_precision_rate": 0.3908
+        },
+        "REVIEW": {
+            "transaction_count": 2519,
+            "pct_of_test_set": 5.4,
+            "labeled_count": 150,
+            "illicit_count": 37,
+            "illicit_precision_rate": 0.2467
+        },
+        "LOW": {
+            "transaction_count": 40327,
+            "pct_of_test_set": 86.45,
+            "labeled_count": 10579,
+            "illicit_count": 204,
+            "illicit_precision_rate": 0.0193
+        },
+        "UNASSESSED": {
+            "transaction_count": 0,
+            "pct_of_test_set": 0.0,
+            "labeled_count": 0,
+            "illicit_count": 0,
+            "illicit_precision_rate": 0.0
+        }
+    },
+    "comparison_with_0.90_model_alert": {
+        "model_0.90_alert_count": 1923,
+        "model_0.90_alert_illicit_precision": 0.9715,
+        "immediate_priority_count": 1923,
+        "immediate_priority_illicit_precision": 0.981
+    }
+}

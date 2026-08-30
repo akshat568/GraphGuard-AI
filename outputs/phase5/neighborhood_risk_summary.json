@@ -1,0 +1,27 @@
+{
+    "transactions": 203769,
+    "risk_features": 20,
+    "features": [
+        "model_risk",
+        "incoming_mean_risk",
+        "incoming_max_risk",
+        "incoming_median_risk",
+        "incoming_std_risk",
+        "incoming_risk_neighbor_count",
+        "outgoing_mean_risk",
+        "outgoing_max_risk",
+        "outgoing_median_risk",
+        "outgoing_std_risk",
+        "outgoing_risk_neighbor_count",
+        "neighborhood_mean_risk",
+        "neighborhood_max_risk",
+        "neighborhood_median_risk",
+        "neighborhood_neighbor_count",
+        "incoming_high_risk_neighbors",
+        "outgoing_high_risk_neighbors",
+        "high_risk_neighbor_count",
+        "high_risk_neighbor_fraction",
+        "neighborhood_vs_self_risk"
+    ],
+    "high_risk_threshold": 0.5
+}

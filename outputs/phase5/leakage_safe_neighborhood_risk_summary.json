@@ -1,0 +1,55 @@
+{
+    "transactions": 203769,
+    "feature_count": 20,
+    "features": [
+        "model_risk",
+        "incoming_mean_risk",
+        "incoming_max_risk",
+        "incoming_median_risk",
+        "incoming_std_risk",
+        "incoming_risk_neighbor_count",
+        "outgoing_mean_risk",
+        "outgoing_max_risk",
+        "outgoing_median_risk",
+        "outgoing_std_risk",
+        "outgoing_risk_neighbor_count",
+        "neighborhood_mean_risk",
+        "neighborhood_max_risk",
+        "neighborhood_median_risk",
+        "neighborhood_neighbor_count",
+        "incoming_high_risk_neighbors",
+        "outgoing_high_risk_neighbors",
+        "high_risk_neighbor_count",
+        "high_risk_neighbor_fraction",
+        "neighborhood_vs_self_risk"
+    ],
+    "training_prediction_folds": [
+        {
+            "train": "1-15",
+            "predict": "11-15"
+        },
+        {
+            "train": "1-20",
+            "predict": "16-20"
+        },
+        {
+            "train": "1-27",
+            "predict": "21-27"
+        },
+        {
+            "train": "1-34",
+            "predict": "28-34"
+        }
+    ],
+    "validation_prediction": {
+        "train": "1-34",
+        "predict": "35-39"
+    },
+    "test_prediction": {
+        "train": "1-39",
+        "predict": "40-49"
+    },
+    "high_risk_threshold": 0.5,
+    "predicted_transactions": 84930,
+    "unpredicted_transactions": 118839
+}
