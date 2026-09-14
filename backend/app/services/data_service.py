@@ -35,6 +35,7 @@ class DataService:
 
     def __init__(self):
         self.is_loaded: bool = False
+        self.has_raw_features: bool = False
 
         # Raw DataFrames / Dictionaries
         self.classes_df: pd.DataFrame = pd.DataFrame()
@@ -70,35 +71,62 @@ class DataService:
 
         logger.info("Starting DataService initialization...")
 
-        # 1. Load classes CSV
-        logger.info(f"Loading classes from {settings.CLASSES_FILE}")
-        self.classes_df = pd.read_csv(settings.CLASSES_FILE)
-        self.classes_df["txId"] = self.classes_df["txId"].astype(int)
-        self.classes_df.set_index("txId", inplace=True)
-        self.classes_df["class_mapped"] = self.classes_df["class"].astype(str).map(map_class_name)
-
-        # 2. Load graph features CSV
+        # 1. Load graph features CSV (tracked artifact)
         logger.info(f"Loading graph features from {settings.GRAPH_FEATURES_FILE}")
         self.graph_features_df = pd.read_csv(settings.GRAPH_FEATURES_FILE)
         self.graph_features_df["txId"] = self.graph_features_df["txId"].astype(int)
         self.graph_features_df.set_index("txId", inplace=True)
 
-        # 3. Load leakage-safe neighborhood risk CSV
+        # 2. Load leakage-safe neighborhood risk CSV (tracked artifact)
         logger.info(f"Loading neighborhood features from {settings.LEAKAGE_SAFE_NEIGHBORHOOD_FILE}")
         self.neighborhood_df = pd.read_csv(settings.LEAKAGE_SAFE_NEIGHBORHOOD_FILE)
         self.neighborhood_df["txId"] = self.neighborhood_df["txId"].astype(int)
         self.neighborhood_df.set_index("txId", inplace=True)
 
-        # 4. Load original features CSV (657 MB) - no header in CSV
-        logger.info(f"Loading features from {settings.FEATURES_FILE} (this may take a few seconds)...")
-        feature_cols = ["txId", "time_step"] + [f"feature_{i}" for i in range(1, 166)]
-        self.features_df = pd.read_csv(settings.FEATURES_FILE, header=None, names=feature_cols)
-        self.features_df["txId"] = self.features_df["txId"].astype(int)
-        self.features_df.set_index("txId", inplace=True)
+        # 3. Load classes (raw CSV if present, else tracked artifact fallback)
+        if settings.has_raw_classes:
+            logger.info(f"Loading classes from raw dataset: {settings.CLASSES_FILE}")
+            self.classes_df = pd.read_csv(settings.CLASSES_FILE)
+            self.classes_df["txId"] = self.classes_df["txId"].astype(int)
+            self.classes_df.set_index("txId", inplace=True)
+            self.classes_df["class_mapped"] = self.classes_df["class"].astype(str).map(map_class_name)
+        else:
+            logger.info(f"Raw classes CSV absent. Constructing classes index from tracked artifacts...")
+            tx_ids = self.neighborhood_df.index
+            classes_series = pd.Series("unknown", index=tx_ids, name="class")
+
+            if settings.INVESTIGATION_ANALYSIS_FILE.exists():
+                inv_df = pd.read_csv(settings.INVESTIGATION_ANALYSIS_FILE)
+                inv_df["txId"] = inv_df["txId"].astype(int)
+                inv_classes = inv_df.set_index("txId")["class_raw"].astype(str)
+                classes_series.update(inv_classes)
+
+            self.classes_df = pd.DataFrame({"class": classes_series}, index=tx_ids)
+            self.classes_df["class_mapped"] = self.classes_df["class"].map(map_class_name)
+
+        # 4. Load features (raw CSV if present, else tracked artifact index fallback)
+        if settings.has_raw_features:
+            logger.info(f"Loading features from {settings.FEATURES_FILE} (this may take a few seconds)...")
+            feature_cols = ["txId", "time_step"] + [f"feature_{i}" for i in range(1, 166)]
+            self.features_df = pd.read_csv(settings.FEATURES_FILE, header=None, names=feature_cols)
+            self.features_df["txId"] = self.features_df["txId"].astype(int)
+            self.features_df.set_index("txId", inplace=True)
+            self.has_raw_features = True
+        else:
+            logger.info("Raw features CSV absent. Using tracked neighborhood/graph artifact index for time_step metadata...")
+            self.features_df = pd.DataFrame({
+                "time_step": self.neighborhood_df["time_step"].astype(int)
+            }, index=self.neighborhood_df.index)
+            self.has_raw_features = False
 
         # 5. Load edgelist CSV & build adjacency dicts
-        logger.info(f"Loading edgelist from {settings.EDGELIST_FILE}")
-        edgelist_df = pd.read_csv(settings.EDGELIST_FILE)
+        if settings.has_raw_edgelist:
+            logger.info(f"Loading edgelist from raw dataset: {settings.EDGELIST_FILE}")
+            edgelist_df = pd.read_csv(settings.EDGELIST_FILE)
+        else:
+            logger.info(f"Raw edgelist CSV absent. Loading edgelist from tracked artifact: {settings.EDGE_TIME_AUDIT_FILE}")
+            edgelist_df = pd.read_csv(settings.EDGE_TIME_AUDIT_FILE)
+
         self.total_edges = len(edgelist_df)
 
         inc_adj: Dict[int, List[int]] = {}
@@ -123,8 +151,8 @@ class DataService:
 
         # 7. Construct Fast Transaction Summary DataFrame
         logger.info("Building fast transaction summary index...")
-        summary = pd.DataFrame(index=self.features_df.index)
-        summary["time_step"] = self.features_df["time_step"].astype(int)
+        summary = pd.DataFrame(index=self.neighborhood_df.index)
+        summary["time_step"] = self.neighborhood_df["time_step"].astype(int)
         summary["class_mapped"] = self.classes_df["class_mapped"]
         summary["risk_score"] = self.neighborhood_df["model_risk"]
         summary["in_degree"] = self.graph_features_df["in_degree"].fillna(0).astype(int)

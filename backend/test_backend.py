@@ -3,8 +3,10 @@ import json
 import urllib.request
 import urllib.error
 import sys
+import os
 
-BASE_URL = "http://127.0.0.1:8001"
+PORT = os.getenv("PORT", "8001")
+BASE_URL = os.getenv("BASE_URL", f"http://127.0.0.1:{PORT}")
 
 def make_request(url, method="GET", body=None):
     headers = {"Content-Type": "application/json"}

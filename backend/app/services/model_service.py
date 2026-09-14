@@ -64,7 +64,7 @@ class ModelService:
             ds.load_data()
 
         # Check if transaction exists
-        if tx_id not in ds.features_df.index:
+        if tx_id not in ds.summary_df.index:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Transaction ID {tx_id} not found in dataset."
@@ -79,22 +79,21 @@ class ModelService:
 
         n_row = ds.neighborhood_df.loc[tx_id]
         if pd.isna(n_row["model_risk"]):
-            time_step = int(ds.features_df.loc[tx_id, "time_step"])
+            time_step = int(ds.summary_df.loc[tx_id, "time_step"])
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail=f"Prediction unavailable because required leakage-safe neighborhood features are unavailable for transaction ID {tx_id} (timestep {time_step})."
             )
 
-        # Construct feature vector
-        feat_row = ds.features_df.loc[tx_id, ORIGINAL_FEATURES]
-        neigh_row = n_row[NEIGHBORHOOD_FEATURES]
-
-        # Combine into single DataFrame for model prediction
-        combined_df = pd.DataFrame([pd.concat([feat_row, neigh_row])], columns=MODEL_FEATURES)
-
-        # Predict probability using loaded XGBoost model
-        probs = self.model.predict_proba(combined_df)
-        risk_score = float(probs[0][1])
+        # Predict risk score: use loaded model when raw features are present; fall back to precomputed model_risk in deployment mode
+        if getattr(ds, "has_raw_features", False) and self.is_loaded and self.model is not None:
+            feat_row = ds.features_df.loc[tx_id, ORIGINAL_FEATURES]
+            neigh_row = n_row[NEIGHBORHOOD_FEATURES]
+            combined_df = pd.DataFrame([pd.concat([feat_row, neigh_row])], columns=MODEL_FEATURES)
+            probs = self.model.predict_proba(combined_df)
+            risk_score = float(probs[0][1])
+        else:
+            risk_score = float(n_row["model_risk"])
 
         risk_level, prediction = get_risk_level_and_prediction(risk_score)
 
