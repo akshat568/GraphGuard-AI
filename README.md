@@ -9,6 +9,9 @@
 
 **GraphGuard AI** is an end-to-end machine learning system designed to detect illicit Bitcoin transactions and fraudulent entities across multi-hop transaction networks. Built on the **Elliptic Bitcoin Dataset** (203,769 transactions, 234,355 directed edges across 49 temporal timesteps), GraphGuard AI combines temporal graph feature engineering, leakage-safe neighborhood risk modeling, an explainable fraud investigation priority layer, a production-style FastAPI backend, and a modern React/TypeScript dashboard.
 
+🌐 **Live Demo**: [https://graph-guard-ai.vercel.app](https://graph-guard-ai.vercel.app)
+⚙️ **Backend API**: [https://graphguard-ai-backend.onrender.com](https://graphguard-ai-backend.onrender.com)
+
 ---
 
 ## 🎯 Key Metrics & Project Performance
